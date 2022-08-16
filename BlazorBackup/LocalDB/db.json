@@ -1,0 +1,14 @@
+{
+  "ListTskObjs": [
+    {
+      "Name": "test",
+      "DateCreated": "2021-12-11T19:53:00",
+      "Interval": 180000,
+      "pathBackup": "D:\\Новая папка\\1.txt",
+      "parentfolderId": null,
+      "nameFolder": null,
+      "nameFolderId": "1pRAC_xVtk5erIlYnd5XtwpK20-s3HEki",
+      "keepBackupTime": 11
+    }
+  ]
+}

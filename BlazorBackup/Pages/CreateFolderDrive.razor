@@ -1,0 +1,43 @@
+﻿@page "/createfolderdrive"
+@using System.Threading;
+
+<div class="alert alert-info @(Collapsed ? "collapse" : "")" role="alert">
+    @titleAlert
+</div>
+<GoogleDriveFileComponent taskObjectModel="taskObjectModel" onlyFolders="true"  TitleLabel="@titleLabel"></GoogleDriveFileComponent>
+<div class="form-group row">
+    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Имя папки</label>
+    <div class="form-group col-md-4">
+
+        <input @bind-value="@taskObjectModel.nameFolder" type="text" class="form-control" id="inputCity">
+    </div>
+</div>
+<button type="button" class="btn-primary" @onclick="CreateFolder">Create Folder</button>
+
+
+@code {
+    private TaskObjectModel taskObjectModel = new TaskObjectModel();
+    private string titleLabel = "Выберете родительскую папку на гугл диске";
+    private string titleAlert { get; set; } = "Info Window";
+    private bool Collapsed { get; set; } = true;
+
+    public void CreateFolder()
+    {
+
+        GoogleDriveApiServiceAccount google = new GoogleDriveApiServiceAccount();
+        var id =  google.CreateFolder(taskObjectModel.nameFolder, taskObjectModel.nameFolderId);
+        Console.WriteLine("ID>>>>>> " + id);
+        Console.WriteLine("2ID>>>>>> " + id);
+        titleAlert = $"Drive Create folder >> {id}" + id;
+        Collapsed = false;
+        StateHasChanged();
+        Thread.Sleep(2000);
+        Collapsed = true;
+        taskObjectModel = new TaskObjectModel();
+        StateHasChanged();
+
+    }
+
+}
+
+

@@ -1,0 +1,43 @@
+﻿@page "/deletedrive"
+@inject IJSRuntime JsRuntime
+
+    <div class="alert alert-info @(Collapsed ? "collapse" : "")"  role="alert">
+       @titleAlert
+    </div>
+
+<GoogleDriveFileComponent taskObjectModel="taskObjectModel" onlyFolders="onlyFolders" checkBoxCollapse="true" TitleLabel="@titleLabel"></GoogleDriveFileComponent>
+
+<button type="button" class="btn-primary" @onclick="Delete">Delete</button>
+
+
+@code {
+    private TaskObjectModel taskObjectModel = new TaskObjectModel();
+    private bool onlyFolders = false;
+    private string titleLabel = "Выберете папку или файл на гугл диске";
+    private string titleAlert { get; set; } = "Info Window";
+    private bool Collapsed { get; set; } = true;
+
+
+    public async void Delete()
+    {
+
+        GoogleDriveApiServiceAccount google = new GoogleDriveApiServiceAccount();
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Вы действительно хотите удалить {taskObjectModel.nameFolderId} \nAre you sure?"); // Confirm
+        if (confirmed)
+        {
+            var delFile = google.DeleteFile(taskObjectModel.nameFolderId);
+            if (delFile != null && delFile == "")
+            {
+                titleAlert = $"Drive Delete id >> {delFile}" + delFile;
+                Collapsed = false;
+                StateHasChanged();
+                await Task.Delay(1000);
+                Collapsed = true;
+                StateHasChanged();
+
+            }
+        }
+        //await JsRuntime.InvokeVoidAsync("alert", "Warning!"); // Alert
+    }
+
+}

@@ -1,0 +1,55 @@
+﻿@page "/"
+
+<h1>
+    <p><a href="@emailAdress">@emailAdress</a></p>
+</h1>
+<p>Для работы приложение оно должно быть запущено от имени Администратора, если вы запускаете приложение через Visual Studio тогда сама студия должна быть запущена от имени Администратора </p>
+<p> Для коретной роботы приложения нужно его публиковать  иначе будет не раретное отображение в браузере </p>
+<p>1. Для начала работы вам нужно создать папку на своем гугл диске и открыть доступ к ней сервисному акаунту приложения "@emailAdress"</p>
+<p>2. После этого создайте задачу для бекапа вашого файла на странице" <a href="/createtask">Create Task</a> </p>
+<p>3. Создание задачи </p>
+<ul>
+    <li>
+        <b>Имя задачи:</b> Назовите задачу
+    </li>
+    <li>
+        <b> Путь к файлу бекапа:</b> Укажите путь к файлу или папке который нужно резервировать также вы можете нажать на кнопу + и воспользоватся поиском по каталогу
+
+    </li>
+    <li>
+        <b>Выберете папку на гугл диске:</b> Выберете из выпадающего списка название папки которую вы создали на перевом этапе
+    </li>
+    <li>
+        <b>Удалять файлы старше:</b> Укажите которое количество дней хранить данный бекап на гугл диске
+    </li>
+</ul>
+@*<button type="button" @onclick="F"> F</button>*@
+@code
+{ private TaskObjectModel taskObjectModel = new TaskObjectModel();
+            private string emailAdress;
+            ReadJsonServiseAccount readJson = new ReadJsonServiseAccount();
+
+
+            protected async override Task OnInitializedAsync()
+            {
+
+                await Task.Delay(1000);
+
+
+                await readJson.ReadFromServiceAccount();
+                emailAdress = readJson.EmailServiceAccount;
+
+
+
+            }
+
+            public void F()
+            {
+                //CopyObject copy = new CopyObject(@"D:\1\");
+
+                // copy.copyFile(@"D:\1\");
+                //Logger logger = new Logger();
+                //logger.LogWrite("hi ", Logger.typeLog.Warning);
+                //logger.LogTelegramm("hi ", Logger.typeLog.Warning);
+            } }
+

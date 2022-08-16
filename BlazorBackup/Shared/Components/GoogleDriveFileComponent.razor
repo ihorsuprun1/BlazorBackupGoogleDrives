@@ -1,0 +1,65 @@
+﻿<div class="form-row">
+    <label for="inputParentFolder" class="col-sm-2 col-form-label-sm">@TitleLabel</label>
+
+    <div class="form-group col-md-4">
+        <select id="inputParentFolder" class="form-control" @onclick="getDriveFiles" @bind="@taskObjectModel.nameFolderId">
+            <option selected></option>
+
+            @if (driveFileList == null)
+            {
+            }
+            else if (driveFileList.Count == 0)
+            {
+            }
+            else
+            {
+                @foreach (var df in driveFileList)
+                {
+                    <option value="@df.Id"> @df.Name </option>
+
+                }
+            }
+        </select>
+    </div>
+    @if (checkBoxCollapse)
+    {
+        <label>onlyFolders</label>
+        <input type="checkbox" @bind="@onlyFolders" />
+    }
+    <div class="form-group col-md-4">
+        <input @bind-value="@taskObjectModel.nameFolderId" disabled="disabled" type="text" class="form-control">
+    </div>
+
+</div>
+@code {
+    [Parameter]
+    public TaskObjectModel taskObjectModel { get; set; }
+    [Parameter]
+    public bool onlyFolders { get; set; }
+    [Parameter]
+    public bool checkBoxCollapse { get; set; } = false;
+    [Parameter]
+    public string TitleLabel { get; set; } = "Выберете папку для бекапа";
+
+    private List<GoogleDriveFile> driveFileList;
+    GoogleDriveApiServiceAccount google = new GoogleDriveApiServiceAccount();
+
+    protected override void  OnInitialized()
+    {
+        driveFileList = new List<GoogleDriveFile>();
+        driveFileList = google.GetDriveFiles(onlyFolders);
+    }
+
+    public void getDriveFiles()
+    {
+        if(driveFileList != null)
+        {
+            driveFileList.Clear();
+        }
+
+        driveFileList = google.GetDriveFiles(onlyFolders);
+       
+    }
+
+
+}

@@ -1,0 +1,130 @@
+﻿@page "/createtask"
+@inject JsonServiceDB jsDb
+
+
+<form>
+    <div class="form-group">
+        <EditForm Model="@taskObjectModel" OnValidSubmit="@CreateJob">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+            <div class="form-group row">
+                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Имя задачи</label>
+                <InputText class="form-control col-sm-8" @bind-Value="@taskObjectModel.Name" placeholder="Enter task name"></InputText>
+            </div>
+
+            <SearhFileComponent taskObjectModel="taskObjectModel"></SearhFileComponent>
+
+            <GoogleDriveFileComponent taskObjectModel="taskObjectModel" onlyFolders="true" TitleLabel="@titleLabel"></GoogleDriveFileComponent>
+
+            <div class="form-group row">
+                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Удалять файлы старше</label>
+                <InputNumber class="form-control col-sm-1" @bind-Value="@taskObjectModel.keepBackupTime"></InputNumber>
+                <InputSelect class="form-control col-sm-1" @bind-Value="@interval1">
+                    @*<option value=60000>минут</option>
+                    <option value=3600000>часов</option>*@
+                    <option value=86400000>дней</option>
+                    @*<option value=604800000>недель</option>*@
+                </InputSelect>
+            </div>
+
+            <div class="form-group row align-content-end">
+                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Время первого запуска</label>
+                @* Нужно создать клас компонента >>> InputDateTime *@
+                <InputDateTime class="form-control col-sm-2" @bind-Value="@taskObjectModel.DateCreated"></InputDateTime>
+
+                <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Повторять каждые </label>
+                <InputNumber class="form-control col-sm-1" @bind-Value="@taskObjectModel.Interval" placeholder="Enter interval"></InputNumber>
+                <InputSelect class="form-control col-sm-1" @bind-Value="@interval0">
+                    <option value=60000>минут</option>
+                    <option value=3600000>часов</option>
+                    <option value=86400000 selected>дней</option>
+                    <option value=604800000>недель</option>
+                </InputSelect>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit">Создать задачу</button>
+
+            </div>
+        </EditForm>
+    </div>
+</form>
+
+<TaskObjectComponent taskObjectLists="@taskObjectLists" DeleteJobCallback="DeleteJob"></TaskObjectComponent>
+
+
+@*<button class="btn btn-primary form-control col-sm-2" @onclick="@F">F</button>
+<button class="btn btn-primary form-control col-sm-2" @onclick="@CreateJob">CreateJob</button>*@
+@code {
+    private TaskObjectModel taskObjectModel = new TaskObjectModel();
+
+    private TaskObjectLists taskObjectLists;
+
+    private double interval0 = 86400000;
+    private double interval1 = 86400000;
+    //private string p="";
+
+
+    private List<GoogleDriveFile> driveFileList = new List<GoogleDriveFile>();
+    private string titleLabel = "Выберете папку на гугл диске";
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        await Task.Delay(1000);
+
+        taskObjectLists = await jsDb.ReadFromDB();
+
+        jsDb.OnPlannedTasksChange += () =>
+        {
+            // do something with the messenger.Text here
+            InvokeAsync(this.StateHasChanged);
+        };
+
+
+    }
+
+
+    public async void DeleteJob(TaskObjectModel task)
+    {
+        var tsk = jsDb.argTaskObjectLists.ListTskObjs.FirstOrDefault(b => b == task);
+        Console.WriteLine("del" + tsk.Name);
+        await jsDb.DeletedJob(tsk);
+
+        StateHasChanged();
+    }
+
+
+    public async void CreateJob()
+    {
+        Console.WriteLine("VALID SUBMIT");
+        Console.WriteLine(taskObjectModel.pathBackup);
+        //taskObjectModel.Interval = taskObjectModel.Interval * 60 * 60 * 1000;
+        taskObjectModel.Interval = taskObjectModel.Interval * interval0;
+
+        Console.WriteLine(taskObjectModel.Interval);
+
+        await jsDb.AddTaskObject(taskObjectModel);
+
+        taskObjectModel = new TaskObjectModel();
+        StateHasChanged();
+
+    }
+
+    //public async void F()
+    //{
+    //    Console.WriteLine("VALID SUBMIT");
+    //    Console.WriteLine(taskObjectModel.pathBackup);
+
+    //    StateHasChanged();
+
+    //}
+
+
+    //private void OnFileSelected(InputFileChangeEventArgs e, TaskObjectModel todo)
+    //{
+    //    var selectedFiles = e.File.Name;   //.File; //e.GetMultipleFiles();
+    //    todo.pathBackup = selectedFiles;
+    //    this.StateHasChanged();
+    //}
+}

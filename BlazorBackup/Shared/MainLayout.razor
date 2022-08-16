@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu  AdminMode="AdminMode"/>
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <button class="@cssButton" @onclick="SetAdmin">Admin mode</button>
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+@code{
+    private string cssButton = "btn btn-primary";
+    private bool AdminMode = false;
+    private void SetAdmin()
+    {
+
+        AdminMode = !AdminMode;
+        if (AdminMode) {
+            cssButton = "btn btn-primary";
+        } else { cssButton = "btn btn-secondary"; };
+    }
+}

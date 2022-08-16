@@ -1,0 +1,77 @@
+﻿@page "/details"
+@inject JsonServiceDB jsDb
+@if (taskObjectLists == null)
+{
+    <p><em>Loading...</em></p>
+
+    <img src="https://www.icegif.com/wp-content/uploads/loading-icegif.gif" height="150" />
+}
+else if (taskObjectLists.ListTskObjs == null)
+{
+    <p><em>Loading...</em></p>
+
+    <img src="https://www.icegif.com/wp-content/uploads/loading-icegif.gif" height="150" />
+}
+else if (taskObjectLists.ListTskObjs.Count == 0)
+{
+    @*<img src="/resources/empty.gif" height="150" />*@
+    <img src="https://cdn.dribbble.com/users/707433/screenshots/6654057/comp_4.gif" height="150" />
+}
+else
+{
+    <table class="table table-bordered   table-sm">
+        <thead>
+            <tr class="bg-success">
+                <th scope="col">Name</th>
+                <th scope="col">Date</th>
+                <th scope="col">Interval</th>
+                <th scope="col">pathBackup</th>
+                <th scope="col">nameFolderId</th>
+                <th scope="col">keepBackupTime</th>
+                <th scope="col">ConterLaunch</th>
+                <th scope="col">Execution</th>
+            </tr>
+        </thead>
+        <tbody>
+            @*Collection was modified; enumeration operation may not execute >>>  Решение: добавить ToList() >>> taskObjectLists.ListTskObjs.ToList()*@
+            @foreach (TaskObjectModel o in taskObjectLists.ListTskObjs.ToList())
+            {
+                <tr>
+                    <td>@o.Name</td>
+                    <td>@o.DateCreated</td>
+                    <td>@(o.Interval / 1000 /60) Minutes</td>
+                    <td>@o.pathBackup</td>
+                    <td>@o.nameFolderId</td>
+                    <td>@o.keepBackupTime</td>
+                    <td>@o.ConterLaunch</td>
+                    <td>@o.Execution</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    public TaskObjectLists taskObjectLists { get; set; } = new TaskObjectLists();
+
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        await Task.Delay(1000);
+
+        taskObjectLists = jsDb._taskObjectLists;
+
+        jsDb.OnPlannedTasksChange += () =>
+        {
+            // do something with the messenger.Text here
+            InvokeAsync(this.StateHasChanged);
+        };
+
+
+    }
+
+}
+
