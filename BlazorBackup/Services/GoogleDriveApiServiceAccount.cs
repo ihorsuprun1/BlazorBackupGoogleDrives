@@ -495,7 +495,7 @@ namespace BlazorBackup.Services
                     Console.WriteLine(f.CreatedTime);
                     Console.WriteLine(f.CreatedTimeRaw);
                     Console.WriteLine("Вызов удаления на гугл диске метод CleanDriveFiles");
-                    var time = f.CreatedTime.Value.AddMinutes(keepTimeClean);//23:00 <22
+                    var time = f.CreatedTime.Value.AddDays(keepTimeClean);//23:00 <22
                     Console.WriteLine( f.CreatedTime + "+" + keepTimeClean  + time + "  " + " DateTime.Now" + DateTime.Now);
                     if (time < DateTime.Now)
                     {
