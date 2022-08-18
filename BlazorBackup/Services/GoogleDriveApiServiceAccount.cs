@@ -123,7 +123,7 @@ namespace BlazorBackup.Services
                     Console.WriteLine(progress.Exception);
                 }
                 var file = request.ResponseBody;
-                Console.WriteLine("ID файла на гугл диску: {0} имя файла: {1} ", file.Id, file.Name);
+                //Console.WriteLine("ID файла на гугл диску: {0} имя файла: {1} ", file.Id, file.Name);
                 return file.Id;
             }
             catch (Exception ex)
@@ -458,8 +458,7 @@ namespace BlazorBackup.Services
 
 
                 // только для получения файлов
-                //FileListRequest.Q = "mimeType='application/vnd.google-apps.file'";
-
+                FileListRequest.Q = "mimeType!='application/vnd.google-apps.folder'";
 
                 //  для получения вхех параметров Fields
                 FileListRequest.Fields = "nextPageToken, files(*)";

@@ -9,7 +9,7 @@ namespace BlazorBackup.Services
 {
     public class CopyObject
     {
-        public static readonly string PathApp = "./TempBackup/";
+        public static readonly string PathApp = Environment.CurrentDirectory + @"\TempBackup\";// "./TempBackup/";
 
         Logger log = new Logger();
 
