@@ -10,7 +10,7 @@ namespace BlazorBackup.Models
     public class TaskObject : IDisposable
     {
         //https://stackoverflow.com/questions/475763/is-it-necessary-to-dispose-system-timers-timer-if-you-use-one-in-your-applicatio/2880574
-               private TaskObjectModel _taskData { get; set; }
+        private TaskObjectModel _taskData { get; set; }
         Logger logger = new Logger();
         private Timer _timer { get; set; }
         private string m_exePath = string.Empty;

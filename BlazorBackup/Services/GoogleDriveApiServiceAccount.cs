@@ -400,6 +400,7 @@ namespace BlazorBackup.Services
                 Google.Apis.Drive.v3.FilesResource.ListRequest FileListRequest = service.Files.List();
                 FileListRequest.Q = $"'{parentId}' in parents";
 
+                
                 // только для получения папок
                 //FileListRequest.Q = "mimeType='application/vnd.google-apps.folder'";
 
@@ -454,7 +455,12 @@ namespace BlazorBackup.Services
                 // Определяем параметры запроса.
                 Google.Apis.Drive.v3.FilesResource.ListRequest FileListRequest = service.Files.List();
                 FileListRequest.Q = $"'{parentId}' in parents";
-                
+
+
+                // только для получения файлов
+                //FileListRequest.Q = "mimeType='application/vnd.google-apps.file'";
+
+
                 //  для получения вхех параметров Fields
                 FileListRequest.Fields = "nextPageToken, files(*)";
 
@@ -489,8 +495,9 @@ namespace BlazorBackup.Services
                     Console.WriteLine(f.Id);
                     Console.WriteLine(f.CreatedTime);
                     Console.WriteLine(f.CreatedTimeRaw);
+                    Console.WriteLine("Вызов удаления на гугл диске метод CleanDriveFiles");
                     var time = f.CreatedTime.Value.AddMinutes(keepTimeClean);//23:00 <22
-                    Console.WriteLine(" f.CreatedTime" + "+ keepTimeClean " + time + "  " + " DateTime.Now" + DateTime.Now);
+                    Console.WriteLine( f.CreatedTime + "+" + keepTimeClean  + time + "  " + " DateTime.Now" + DateTime.Now);
                     if (time < DateTime.Now)
                     {
                         Console.WriteLine("delette  id   " + f.Id + "name : " + f.Name);

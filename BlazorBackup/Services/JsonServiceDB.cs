@@ -28,6 +28,7 @@ namespace BlazorBackup.Services
         }
         public Task<TaskObjectLists> ReadFromDB(bool async)
         {
+
             try
             {
                 // Запускаем операцию чтения базы данных в отдельном потоке
@@ -69,7 +70,7 @@ namespace BlazorBackup.Services
 
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogWrite($"Metod: ReadFromDB(bool async) >> {ex.Message}", Logger.typeLog.Error);
                 logger.LogTelegramm($"Metod: ReadFromDB(bool async) >> {ex.Message}", Logger.typeLog.Error);
@@ -79,54 +80,62 @@ namespace BlazorBackup.Services
 
         public async Task<TaskObjectLists> ReadFromDB()
         {
-            try
+            return await Task.Run(async () =>
             {
-                // Запускаем операцию чтения базы данных в отдельном потоке
-                return await Task.Run(async () =>
-                {
+                
+                //Реализация SaveChange из кода
+                OnPlannedTasksChange?.Invoke();
+                return _taskObjectLists;
+            });
 
-                    if (File.Exists(FullPathDB) && FullPathDB != null)
-                    {
+            //try
+            //{
+            //    // Запускаем операцию чтения базы данных в отдельном потоке
+            //    return await Task.Run(async () =>
+            //    {
 
-                        using (FileStream fs = new FileStream(FullPathDB, FileMode.OpenOrCreate))
-                        {
-                            _taskObjectLists = await JsonSerializer.DeserializeAsync<TaskObjectLists>(fs);
-                        }
+            //        if (File.Exists(FullPathDB) && FullPathDB != null)
+            //        {
 
-                        if (_taskObjectLists.ListTskObjs.Count > 0)
-                        {
-                            foreach (var tsk in _taskObjectLists.ListTskObjs)
-                            {
-                                Console.WriteLine(tsk.Name);
+            //            using (FileStream fs = new FileStream(FullPathDB, FileMode.OpenOrCreate))
+            //            {
+            //                _taskObjectLists = await JsonSerializer.DeserializeAsync<TaskObjectLists>(fs);
+            //            }
 
-                                TaskObject taskObject = new TaskObject(tsk);
-                                tsk.taskObject = taskObject;
+            //            if (_taskObjectLists.ListTskObjs.Count > 0)
+            //            {
+            //                foreach (var tsk in _taskObjectLists.ListTskObjs)
+            //                {
+            //                    //Console.WriteLine(tsk.Name);
 
-                                Console.WriteLine(@"Задача {0} ЗАПУЩЕНА", tsk.Name);
-                                tsk.taskObject.StartTimer();
-                            }
+            //                    //TaskObject taskObject = new TaskObject(tsk);
+            //                    //tsk.taskObject = taskObject;
 
-                        }
+            //                    //Console.WriteLine(@"Задача {0} ЗАПУЩЕНА", tsk.Name);
+            //                    //tsk.taskObject.StartTimer();
+            //                }
 
-                        Console.WriteLine("JsonSerializer");
+            //            }
 
-                        //Реализация SaveChange из кода
-                        OnPlannedTasksChange?.Invoke();
-                        return _taskObjectLists;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+            //            Console.WriteLine("JsonSerializer");
 
-                });
-            }
-            catch (Exception ex)
-            {
-                logger.LogWrite($"Metod: ReadFromDB() >> {ex.Message}", Logger.typeLog.Error);
-                logger.LogTelegramm($"Metod: ReadFromDB() >> {ex.Message}", Logger.typeLog.Error);
-                return null;
-            }
+            //            //Реализация SaveChange из кода
+            //            OnPlannedTasksChange?.Invoke();
+            //            return _taskObjectLists;
+            //        }
+            //        else
+            //        {
+            //            return null;
+            //        }
+
+            //    });
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogWrite($"Metod: ReadFromDB() >> {ex.Message}", Logger.typeLog.Error);
+            //    logger.LogTelegramm($"Metod: ReadFromDB() >> {ex.Message}", Logger.typeLog.Error);
+            //    return null;
+            //}
           
         }
 
