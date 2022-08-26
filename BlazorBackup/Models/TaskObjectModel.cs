@@ -27,6 +27,7 @@ namespace BlazorBackup.Models
 
         [JsonIgnore]
         public bool Execution { get; set; } = false;
+        
         //Не записывать в базу если этабаза json
         [JsonIgnore]
         public TaskObject taskObject { get; set; }
